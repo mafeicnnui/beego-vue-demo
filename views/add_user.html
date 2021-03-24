@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+   <title>用户录入</title>
+   <link rel="stylesheet" href="../static/css/element.css">
+   <style>
+      .el-input  {
+          width: 320px;
+      }
+      .el-input-number {
+          width: 320px;
+      }
+
+      .demo-ruleForm{
+          padding-top:5%;
+          padding-left:30%;
+          width: 600px;
+      }
+
+  </style>
+</head>
+<body>
+  <div id="app">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="姓名" prop="name" required>
+              <el-input v-model="ruleForm.name"></el-input>
+          </el-form-item>
+
+          <el-form-item label="性别" prop="gender" required>
+              <el-select v-model="ruleForm.value" placeholder="选择性别">
+                  <el-option
+                          v-for="item in ruleForm.gender"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                  </el-option>
+              </el-select>
+          </el-form-item>
+
+          <el-form-item label="生日" required>
+              <el-col :span="15">
+                  <el-form-item prop="birthday">
+                      <el-date-picker
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          placeholder="选择生日"
+                          v-model="ruleForm.birthday"
+                          style="width: 100%;">
+                      </el-date-picker>
+                  </el-form-item>
+              </el-col>
+          </el-form-item>
+
+          <el-form-item label="年龄" required>
+              <el-col :span="15">
+                  <el-form-item prop="age">
+                      <el-input-number  v-model="ruleForm.age" :min="18" :max="60" label="年龄"></el-input-number>
+                  </el-form-item>
+              </el-col>
+          </el-form-item>
+
+          <el-form-item>
+              <el-col :span="5">
+                  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+              </el-col>
+             <el-col :span="5">
+                 <el-button type="primary" @click="saveUser">保 存</el-button>
+             </el-col>
+          </el-form-item>
+
+      </el-form>
+  </div>
+</body>
+
+<script  src="../static/js/vue.js"></script>
+<script  src="../static/js/element.js"></script>
+<script  src="../static/js/axios.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data:  {
+        ruleForm: {
+            name: '',
+            gender: [
+                {
+                    value: '男',
+                    label: '男'
+                },
+                {
+                    value: '女',
+                    label: '女'
+                }
+            ],
+            birthday:'',
+            age: 18,
+            value: ''
+        },
+        rules: {
+            name: [
+                { required: true, message: '请输入名称', trigger: 'blur' },
+                { min: 2, max: 5, message: '长度在 4 到 10 个字符', trigger: 'blur' }
+            ],
+            gender: [
+                { required: true, message: '请选择性别', trigger: 'change' }
+            ],
+            birthday: [
+                { type: 'string', required: true, message: '请选择日期', trigger: 'change' }
+            ],
+            age: [
+                { type: 'number', required: true, message: '请输入年龄', trigger: 'change' }
+            ],
+        }
+    },
+    methods: {
+      saveUser:function(){
+         let config = {
+              headers: {
+                  "Content-Type": "multipart/form-data"
+              }
+         };
+         let formData = new FormData()
+          formData.append('name', this.ruleForm.name)
+          formData.append('gender', this.ruleForm.value)
+          formData.append('birthday', this.ruleForm.birthday)
+          formData.append('age', this.ruleForm.age)
+          axios.put('http://192.168.1.196:9000/user/',formData,config).then((res) => {
+             console.log('res=',res);
+             if (res.data['Code'] == 200 ) {
+                 this.$notify({
+                     title: '成功',
+                     message: '用户保存成功',
+                     type: 'success'
+                 });
+             } else {
+                 this.$notify.error({
+                     title: '错误',
+                     message: res.data['Msg'],
+                 });
+             }
+          }).catch((error) => {
+             console.log('error=',error);
+          });
+       }
+    }
+  })
+</script>
+</html>
