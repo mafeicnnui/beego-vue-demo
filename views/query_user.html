@@ -242,7 +242,7 @@
             formData.append('gender', this.ruleForm.value)
             formData.append('birthday', this.ruleForm.birthday)
             formData.append('age', this.ruleForm.age)
-            axios.put('http://192.168.1.196:9000/user/',formData,config).then((res) => {
+            axios.put('http://{0}:{1}/user/user/'.format(server_ip,server_port),formData,config).then((res) => {
                 console.log('res=',res);
                 if (res.data['Code'] == 200 ) {
                     this.$notify({
@@ -276,7 +276,7 @@
             formData.append('gender', this.ruleForm.value)
             formData.append('birthday', this.ruleForm.birthday)
             formData.append('age', this.ruleForm.age)
-            axios.post('http://192.168.1.196:9000/user/',formData,config).then((res) => {
+            axios.post('http://{0}:{1}/user/user/'.format(server_ip,server_port),formData,config).then((res) => {
                 console.log('res=',res);
                 if (res.data['Code'] == 200 ) {
                     this.$notify({
@@ -300,7 +300,7 @@
         },
         delUser:function(index,row) {
             console.log('handleClick=',row.Id)
-            axios.delete('http://192.168.1.196:9000/user',
+            axios.delete('http://{0}:{1}/user/user/'.format(server_ip,server_port),
                 { params:
                     {
                         id:row.Id
