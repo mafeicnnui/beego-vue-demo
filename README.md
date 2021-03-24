@@ -9,9 +9,10 @@
 
 三、启动
 
+    bee run
     Windows:  student.exe
     Linux:   ./student
-    
+        
 四、配置 
 
     后端: conf/app.conf
